@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} | Smart Expense Tracker{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">{{ title }}</h1>
+  <a href="{% url 'report_index' %}">All reports</a>
+</div>
+
+<form method="get" class="app-form row g-2 mb-3 align-items-end">
+  {{ form.non_field_errors }}
+  {% for field in form %}
+    <div class="col-sm-6 col-md-4">
+      {{ field.label_tag }}
+      {{ field }}
+      {{ field.errors }}
+    </div>
+  {% endfor %}
+  <div class="col-auto">
+    <button type="submit" class="btn btn-secondary">Show</button>
+  </div>
+</form>
+
+{% if date_range %}
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    {% if previous_day %}
+      <a class="btn btn-outline-secondary btn-sm" href="?date={{ previous_day|date:'Y-m-d' }}">Previous</a>
+    {% else %}
+      <span></span>
+    {% endif %}
+    <span class="fw-semibold">
+      {{ date_range.start|date:"j M Y" }}{% if date_range.start != date_range.end %} to {{ date_range.end|date:"j M Y" }}{% endif %}
+    </span>
+    {% if next_day %}
+      <a class="btn btn-outline-secondary btn-sm" href="?date={{ next_day|date:'Y-m-d' }}">Next</a>
+    {% else %}
+      <span></span>
+    {% endif %}
+  </div>
+
+  <div class="d-flex flex-wrap gap-2 justify-content-end align-items-center mb-3">
+    <span class="small text-body-secondary">Download the expenses of this period:</span>
+    {% with date_from=date_range.start|date:"Y-m-d" date_to=date_range.end|date:"Y-m-d" %}
+      <a class="btn btn-outline-secondary btn-sm" href="{% url 'export_expenses' 'csv' %}?date_from={{ date_from }}&amp;date_to={{ date_to }}">CSV</a>
+      <a class="btn btn-outline-secondary btn-sm" href="{% url 'export_expenses' 'xlsx' %}?date_from={{ date_from }}&amp;date_to={{ date_to }}">Excel</a>
+      <a class="btn btn-outline-secondary btn-sm" href="{% url 'export_expenses' 'pdf' %}?date_from={{ date_from }}&amp;date_to={{ date_to }}">PDF</a>
+    {% endwith %}
+  </div>
+
+  <div class="row g-3 mb-3">
+    <div class="col-6 col-lg-3">
+      <div class="card h-100"><div class="card-body">
+        <div class="small text-body-secondary">My spending</div>
+        <div class="fs-4">{{ summary.total }}</div>
+        <div class="small text-body-secondary">{{ expense_count }} expense{{ expense_count|pluralize }}</div>
+      </div></div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="card h-100"><div class="card-body">
+        <div class="small text-body-secondary">Paid by me</div>
+        <div class="fs-4">{{ summary.paid_by_me }}</div>
+      </div></div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="card h-100"><div class="card-body">
+        <div class="small text-body-secondary">Personal</div>
+        <div class="fs-4">{{ summary.personal }}</div>
+      </div></div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="card h-100"><div class="card-body">
+        <div class="small text-body-secondary">Shared</div>
+        <div class="fs-4">{{ summary.shared }}</div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-md-6 col-lg-4">
+      {% include "includes/spending_totals.html" with heading="By category" rows=category_totals empty_text="No spending in this period." %}
+    </div>
+    <div class="col-md-6 col-lg-4">
+      {% include "includes/spending_totals.html" with heading="By payment method" rows=payment_method_totals empty_text="No spending in this period." %}
+    </div>
+    <div class="col-md-6 col-lg-4">
+      {% include "includes/spending_totals.html" with heading="By person, in expenses you share" rows=person_totals empty_text="No spending in this period." %}
+    </div>
+    <div class="col-md-6 col-lg-4">
+      {% include "includes/settlement_summary.html" %}
+    </div>
+  </div>
+{% endif %}
+{% endblock %}

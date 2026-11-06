@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Dashboard | Smart Expense Tracker{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">Dashboard</h1>
+  <a class="btn btn-primary" href="{% url 'expense_create' %}">Add expense</a>
+</div>
+
+<p class="text-body-secondary small">
+  My spending is your share of each expense. Paid by me is the cash you actually paid.
+</p>
+
+<div class="row g-3 mb-3">
+  <div class="col-6 col-lg-3">
+    <div class="card h-100"><div class="card-body">
+      <div class="small text-body-secondary">Today</div>
+      <div class="fs-4">{{ summary.today }}</div>
+    </div></div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card h-100"><div class="card-body">
+      <div class="small text-body-secondary">This week</div>
+      <div class="fs-4">{{ summary.this_week }}</div>
+    </div></div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card h-100"><div class="card-body">
+      <div class="small text-body-secondary">This month</div>
+      <div class="fs-4">{{ summary.this_month }}</div>
+    </div></div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card h-100"><div class="card-body">
+      <div class="small text-body-secondary">My total spending</div>
+      <div class="fs-4">{{ summary.total }}</div>
+    </div></div>
+  </div>
+  <div class="col-6 col-lg-4">
+    <div class="card h-100"><div class="card-body">
+      <div class="small text-body-secondary">Paid by me</div>
+      <div class="fs-5">{{ summary.paid_by_me }}</div>
+    </div></div>
+  </div>
+  <div class="col-6 col-lg-4">
+    <div class="card h-100"><div class="card-body">
+      <div class="small text-body-secondary">Personal</div>
+      <div class="fs-5">{{ summary.personal }}</div>
+    </div></div>
+  </div>
+  <div class="col-6 col-lg-4">
+    <div class="card h-100"><div class="card-body">
+      <div class="small text-body-secondary">Shared</div>
+      <div class="fs-5">{{ summary.shared }}</div>
+    </div></div>
+  </div>
+</div>
+
+<div class="row g-3 mb-3">
+  <div class="col-md-6">
+    <div class="card h-100">
+      <div class="card-body">
+        <h2 class="h6 card-title">Budget this month</h2>
+        {% if budget %}
+          {% include "includes/budget_status.html" %}
+        {% else %}
+          <p class="text-body-secondary mb-2">No budget set for this month.</p>
+          <a class="btn btn-sm btn-outline-primary" href="{% url 'budget_create' %}">Set a budget</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    {% include "includes/settlement_summary.html" %}
+  </div>
+</div>
+
+<div class="row g-3 mb-3">
+  <div class="col-md-6 col-lg-4">
+    {% include "includes/spending_totals.html" with heading="By category" rows=category_totals empty_text="No spending yet." chart_id="category-chart" %}
+  </div>
+  <div class="col-md-6 col-lg-4">
+    {% include "includes/spending_totals.html" with heading="By payment method" rows=payment_method_totals empty_text="No spending yet." chart_id="payment-method-chart" %}
+  </div>
+  <div class="col-md-6 col-lg-4">
+    {% include "includes/spending_totals.html" with heading="By person, in expenses you share" rows=person_totals empty_text="No spending yet." %}
+  </div>
+</div>
+
+<h2 class="h5">Recent expenses</h2>
+<div class="table-responsive">
+  <table class="table align-middle">
+    <thead>
+      <tr>
+        <th scope="col">Date</th>
+        <th scope="col">Title</th>
+        <th scope="col">Category</th>
+        <th scope="col" class="text-end">Your share</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for expense in recent_expenses %}
+        <tr>
+          <td class="text-nowrap">{{ expense.date|date:"j M Y" }}</td>
+          <td><a href="{% url 'expense_detail' expense.pk %}">{{ expense.title }}</a></td>
+          <td>{{ expense.category.name }}</td>
+          <td class="text-end">{{ expense.my_share|default_if_none:"-" }}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="4" class="text-center text-body-secondary py-4">No expenses yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{{ category_totals|json_script:"category-totals-data" }}
+{{ payment_method_totals|json_script:"payment-method-totals-data" }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.6.1/dist/chart.umd.min.js"
+        integrity="sha384-Emf5ZVIUiarAdhkgtqK+5/Z5qIvM6QoVrS+qAVtfyZVuD5lIHrac0me485+Antp0"
+        crossorigin="anonymous"></script>
+<script src="{% static 'js/dashboard-charts.js' %}"></script>
+{% endblock %}

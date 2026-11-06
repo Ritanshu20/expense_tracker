@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Budget | Smart Expense Tracker{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">Monthly budgets</h1>
+  <a class="btn btn-primary" href="{% url 'budget_create' %}">Add budget</a>
+</div>
+<p class="text-body-secondary small">Spent is your share of each expense in that month.</p>
+
+<div class="row g-3">
+  {% for budget in budgets %}
+    <div class="col-md-6 col-lg-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h2 class="h6 card-title">{{ budget.year }}-{{ budget.month|stringformat:"02d" }}</h2>
+          {% include "includes/budget_status.html" %}
+        </div>
+        <div class="card-footer text-end">
+          <a class="btn btn-sm btn-outline-secondary" href="{% url 'budget_edit' budget.pk %}">Edit</a>
+          <a class="btn btn-sm btn-outline-danger" href="{% url 'budget_delete' budget.pk %}">Delete</a>
+        </div>
+      </div>
+    </div>
+  {% empty %}
+    <div class="col-12"><p class="text-body-secondary">No budgets yet.</p></div>
+  {% endfor %}
+</div>
+{% endblock %}

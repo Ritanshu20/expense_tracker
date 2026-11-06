@@ -1,0 +1,20 @@
+<div class="participant-row row g-2 align-items-end mb-2">
+  <div class="col-12 col-md-5">
+    {{ row.person.label_tag }}
+    {{ row.person }}
+    {{ row.person.errors }}
+  </div>
+  <div class="col-5 col-md-3">
+    {{ row.paid_amount.label_tag }}
+    {{ row.paid_amount }}
+    {{ row.paid_amount.errors }}
+  </div>
+  <div class="col-5 col-md-3 share-field">
+    {{ row.share_value.label_tag }}
+    {{ row.share_value }}
+    {{ row.share_value.errors }}
+  </div>
+  <div class="col-2 col-md-1">
+    <button type="button" class="btn btn-outline-danger remove-participant" aria-label="Remove this person">&times;</button>
+  </div>
+</div>

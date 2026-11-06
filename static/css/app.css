@@ -1,0 +1,26 @@
+/* Project styles. Bootstrap 5 does most of the work; add only what it cannot do. */
+
+/* Forms rendered with {{ form.as_div }}. */
+.app-form > div {
+  margin-bottom: 1rem;
+}
+
+.app-form label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.app-form .helptext {
+  color: var(--bs-secondary-color);
+  font-size: 0.875em;
+  margin-bottom: 0.25rem;
+}
+
+.app-form .errorlist {
+  color: var(--bs-danger);
+  font-size: 0.875em;
+  list-style: none;
+  margin-bottom: 0.25rem;
+  padding-left: 0;
+}

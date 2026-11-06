@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Profile | Smart Expense Tracker{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6 col-lg-5">
+    <h1 class="h3 mb-3">Profile</h1>
+    <dl class="row">
+      <dt class="col-sm-4">Username</dt>
+      <dd class="col-sm-8">{{ user.username }}</dd>
+      <dt class="col-sm-4">Member since</dt>
+      <dd class="col-sm-8">{{ user.date_joined|date:"j M Y" }}</dd>
+    </dl>
+    <form method="post" class="app-form">
+      {% csrf_token %}
+      {{ form.as_div }}
+      <button type="submit" class="btn btn-primary">Save changes</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

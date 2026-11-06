@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="py-5 text-center">
+  <h1 class="display-5 fw-bold">Smart Expense Tracker</h1>
+  <p class="lead text-body-secondary">
+    Track personal and shared expenses, split bills fairly and see who owes whom.
+  </p>
+  <div class="d-flex justify-content-center gap-2 mt-4">
+    <a class="btn btn-primary btn-lg" href="{% url 'register' %}">Create an account</a>
+    <a class="btn btn-outline-secondary btn-lg" href="{% url 'login' %}">Log in</a>
+  </div>
+</div>
+{% endblock %}

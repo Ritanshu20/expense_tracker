@@ -1,0 +1,27 @@
+{# Who the user owes and who owes the user. Expects settlements, a SettlementSummary. #}
+<div class="card h-100">
+  <div class="card-body">
+    <h2 class="h6 card-title">Who owes whom</h2>
+    {% for debt in settlements.owed_to_you %}
+      <p class="mb-1">
+        {{ debt.from_user }} owes you <strong>{{ debt.amount }}</strong>
+        <a class="small" href="{% url 'settlement_create' %}?direction=they_paid&amp;person={{ debt.from_user|urlencode }}&amp;amount={{ debt.amount }}">Record payment</a>
+      </p>
+    {% endfor %}
+    {% for debt in settlements.you_owe %}
+      <p class="mb-1">
+        You owe {{ debt.to_user }} <strong>{{ debt.amount }}</strong>
+        <a class="small" href="{% url 'settlement_create' %}?direction=i_paid&amp;person={{ debt.to_user|urlencode }}&amp;amount={{ debt.amount }}">Record payment</a>
+      </p>
+    {% endfor %}
+    {% if not settlements.owed_to_you and not settlements.you_owe %}
+      <p class="text-body-secondary mb-0">Nobody owes anything.</p>
+    {% endif %}
+    {% if settlements.owed_to_you or settlements.you_owe %}
+      <hr>
+      <p class="small text-body-secondary mb-0">
+        Owed to you: {{ settlements.total_owed_to_you }}. You owe: {{ settlements.total_you_owe }}.
+      </p>
+    {% endif %}
+  </div>
+</div>

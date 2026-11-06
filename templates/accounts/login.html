@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Log in | Smart Expense Tracker{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6 col-lg-5">
+    <h1 class="h3 mb-3">Log in</h1>
+    <form method="post" class="app-form">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ next }}">
+      {{ form.as_div }}
+      <button type="submit" class="btn btn-primary w-100">Log in</button>
+    </form>
+    <p class="mt-3 text-center">
+      New here?
+      <a href="{% url 'register' %}{% if next %}?next={{ next|urlencode }}{% endif %}">Create an account</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

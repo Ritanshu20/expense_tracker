@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Create an account | Smart Expense Tracker{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6 col-lg-5">
+    <h1 class="h3 mb-3">Create an account</h1>
+    <form method="post" class="app-form">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ next }}">
+      {{ form.as_div }}
+      <button type="submit" class="btn btn-primary w-100">Create account</button>
+    </form>
+    <p class="mt-3 text-center">
+      Already have an account?
+      <a href="{% url 'login' %}{% if next %}?next={{ next|urlencode }}{% endif %}">Log in</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

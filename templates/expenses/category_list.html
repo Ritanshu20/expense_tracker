@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Categories | Smart Expense Tracker{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">Categories</h1>
+  <a class="btn btn-primary" href="{% url 'category_create' %}">Add category</a>
+</div>
+
+<div class="table-responsive">
+  <table class="table align-middle">
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Type</th>
+        <th scope="col" class="text-end">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for category in categories %}
+        <tr>
+          <td>{{ category.name }}</td>
+          {% if category.owner_id %}
+            <td><span class="badge text-bg-primary">Custom</span></td>
+            <td class="text-end">
+              <a class="btn btn-sm btn-outline-secondary" href="{% url 'category_edit' category.pk %}">Edit</a>
+              <a class="btn btn-sm btn-outline-danger" href="{% url 'category_delete' category.pk %}">Delete</a>
+            </td>
+          {% else %}
+            <td><span class="badge text-bg-secondary">Default</span></td>
+            <td></td>
+          {% endif %}
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

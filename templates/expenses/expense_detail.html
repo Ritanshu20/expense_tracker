@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}{{ expense.title }} | Smart Expense Tracker{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-start mb-3">
+  <h1 class="h3 mb-0">{{ expense.title }}</h1>
+  {% if expense.created_by_id == user.pk %}
+    <div>
+      <a class="btn btn-sm btn-outline-secondary" href="{% url 'expense_edit' expense.pk %}">Edit</a>
+      <a class="btn btn-sm btn-outline-danger" href="{% url 'expense_delete' expense.pk %}">Delete</a>
+    </div>
+  {% endif %}
+</div>
+
+<dl class="row">
+  <dt class="col-sm-3">Amount</dt>
+  <dd class="col-sm-9">{{ expense.amount }}</dd>
+  <dt class="col-sm-3">Date</dt>
+  <dd class="col-sm-9">{{ expense.date|date:"j M Y" }}</dd>
+  <dt class="col-sm-3">Category</dt>
+  <dd class="col-sm-9">{{ expense.category.name }}</dd>
+  <dt class="col-sm-3">Payment method</dt>
+  <dd class="col-sm-9">{{ expense.get_payment_method_display }}</dd>
+  <dt class="col-sm-3">Type</dt>
+  <dd class="col-sm-9">{{ expense.get_expense_type_display }}</dd>
+  <dt class="col-sm-3">Created by</dt>
+  <dd class="col-sm-9">{{ expense.created_by.username }}</dd>
+  {% if expense.description %}
+    <dt class="col-sm-3">Description</dt>
+    <dd class="col-sm-9">{{ expense.description|linebreaksbr }}</dd>
+  {% endif %}
+</dl>
+
+<h2 class="h5">Participants</h2>
+<div class="table-responsive">
+  <table class="table align-middle">
+    <thead>
+      <tr>
+        <th scope="col">Person</th>
+        <th scope="col" class="text-end">Paid</th>
+        <th scope="col" class="text-end">Share</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for participant in participants %}
+        <tr>
+          <td>{{ participant.user.username }}</td>
+          <td class="text-end">{{ participant.paid_amount }}</td>
+          <td class="text-end">{{ participant.share_amount }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% if settlements %}
+  <h2 class="h5">Who pays whom</h2>
+  <ul>
+    {% for settlement in settlements %}
+      <li>{{ settlement.from_user }} pays {{ settlement.to_user }} {{ settlement.amount }}</li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
+<a href="{% url 'expense_list' %}">Back to expenses</a>
+{% endblock %}

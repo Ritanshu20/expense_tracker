@@ -1,0 +1,14 @@
+{# How much of one budget has been used. Expects budget, with its usage attached. #}
+<div class="d-flex justify-content-between small mb-1">
+  <span>{{ budget.usage.spent }} of {{ budget.amount }}</span>
+  <span>{{ budget.usage.usage_percent }}%</span>
+</div>
+<progress class="w-100" value="{{ budget.usage.usage_percent }}" max="100"
+          aria-label="Budget used"></progress>
+{% if budget.usage.is_over %}
+  <p class="text-danger small mb-0">Over budget by {{ budget.usage.over_amount }}.</p>
+{% elif budget.usage.is_warning %}
+  <p class="text-warning-emphasis small mb-0">Close to the limit: {{ budget.usage.remaining }} left.</p>
+{% else %}
+  <p class="text-body-secondary small mb-0">{{ budget.usage.remaining }} left.</p>
+{% endif %}

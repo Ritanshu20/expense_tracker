@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Delete budget | Smart Expense Tracker{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6 col-lg-5">
+    <h1 class="h3 mb-3">Delete budget</h1>
+    <p>Delete the budget of <strong>{{ budget.amount }}</strong> for {{ budget.year }}-{{ budget.month|stringformat:"02d" }}?</p>
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">Delete</button>
+      <a class="btn btn-link" href="{% url 'budget_list' %}">Cancel</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

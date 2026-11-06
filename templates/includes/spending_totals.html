@@ -1,0 +1,25 @@
+{# A card with a list of totals. Expects heading, rows and empty_text. An optional chart_id adds a bar chart. #}
+<div class="card h-100">
+  <div class="card-body">
+    <h2 class="h6 card-title">{{ heading }}</h2>
+    {% if rows %}
+      {% if chart_id %}
+        <div class="position-relative mb-2">
+          <canvas id="{{ chart_id }}" role="img" aria-label="{{ heading }}. The same numbers are in the table below."></canvas>
+        </div>
+      {% endif %}
+      <table class="table table-sm mb-0">
+        <tbody>
+          {% for row in rows %}
+            <tr>
+              <td>{{ row.label }}</td>
+              <td class="text-end">{{ row.total }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="text-body-secondary mb-0">{{ empty_text }}</p>
+    {% endif %}
+  </div>
+</div>

@@ -1,0 +1,47 @@
+name: CI
+
+# CI only tests. It never deploys.
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: expense_tracker_user
+          POSTGRES_PASSWORD: ci-only-password
+          POSTGRES_DB: expense_tracker
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U expense_tracker_user -d expense_tracker"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      SECRET_KEY: ci-only-secret-key-not-used-anywhere-else
+      DEBUG: "False"
+      # The test client uses plain HTTP, so the HTTPS redirect would answer every request.
+      SECURE_SSL_REDIRECT: "False"
+      ALLOWED_HOSTS: localhost
+      DATABASE_URL: postgres://expense_tracker_user:ci-only-password@localhost:5432/expense_tracker
+
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - run: pip install -r requirements-dev.txt
+      - run: ruff check .
+      - run: ruff format --check .
+      - run: python manage.py check
+      - run: python manage.py makemigrations --check --dry-run
+      - run: python manage.py test

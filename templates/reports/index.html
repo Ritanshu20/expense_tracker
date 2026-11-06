@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Reports | Smart Expense Tracker{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-3">Reports</h1>
+<div class="list-group">
+  <a class="list-group-item list-group-item-action" href="{% url 'report_daily' %}">Daily</a>
+  <a class="list-group-item list-group-item-action" href="{% url 'report_weekly' %}">Weekly, Monday to Sunday</a>
+  <a class="list-group-item list-group-item-action" href="{% url 'report_monthly' %}">Monthly</a>
+  <a class="list-group-item list-group-item-action" href="{% url 'report_yearly' %}">Yearly</a>
+  <a class="list-group-item list-group-item-action" href="{% url 'report_custom' %}">Custom range</a>
+</div>
+{% endblock %}

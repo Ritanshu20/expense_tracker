@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Delete payment | Smart Expense Tracker{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6 col-lg-5">
+    <h1 class="h3 mb-3">Delete payment</h1>
+    <p>
+      Delete the payment of <strong>{{ payment.amount }}</strong> from {{ payment.from_user.username }}
+      to {{ payment.to_user.username }}? The balance between them goes back up.
+    </p>
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">Delete</button>
+      <a class="btn btn-link" href="{% url 'settlement_list' %}">Cancel</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

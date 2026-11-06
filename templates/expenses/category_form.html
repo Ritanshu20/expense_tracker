@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} | Smart Expense Tracker{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6 col-lg-5">
+    <h1 class="h3 mb-3">{{ title }}</h1>
+    <form method="post" class="app-form">
+      {% csrf_token %}
+      {{ form.as_div }}
+      <button type="submit" class="btn btn-primary">Save</button>
+      <a class="btn btn-link" href="{% url 'category_list' %}">Cancel</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

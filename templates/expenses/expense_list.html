@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Expenses | Smart Expense Tracker{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">Expenses</h1>
+  <a class="btn btn-primary" href="{% url 'expense_create' %}">Add expense</a>
+</div>
+
+<form method="get" class="app-form row g-2 mb-3 align-items-end">
+  {{ filter_form.non_field_errors }}
+  {% for field in filter_form %}
+    <div class="col-6 col-md-4 col-lg-2">
+      {{ field.label_tag }}
+      {{ field }}
+      {{ field.errors }}
+    </div>
+  {% endfor %}
+  <div class="col-12 d-flex flex-wrap gap-2 align-items-center">
+    <button type="submit" class="btn btn-secondary btn-sm">Apply</button>
+    <a class="btn btn-link btn-sm" href="{% url 'expense_list' %}">Clear</a>
+    <span class="ms-auto small text-body-secondary">Download these expenses:</span>
+    <a class="btn btn-outline-secondary btn-sm" href="{% url 'export_expenses' 'csv' %}{% querystring page=None %}">CSV</a>
+    <a class="btn btn-outline-secondary btn-sm" href="{% url 'export_expenses' 'xlsx' %}{% querystring page=None %}">Excel</a>
+    <a class="btn btn-outline-secondary btn-sm" href="{% url 'export_expenses' 'pdf' %}{% querystring page=None %}">PDF</a>
+  </div>
+</form>
+
+<div class="table-responsive">
+  <table class="table align-middle">
+    <thead>
+      <tr>
+        <th scope="col">Date</th>
+        <th scope="col">Title</th>
+        <th scope="col">Category</th>
+        <th scope="col" class="d-none d-md-table-cell">Payment</th>
+        <th scope="col" class="d-none d-md-table-cell">Type</th>
+        <th scope="col" class="text-end">Amount</th>
+        <th scope="col" class="text-end">Your share</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for expense in page %}
+        <tr>
+          <td class="text-nowrap">{{ expense.date|date:"j M Y" }}</td>
+          <td><a href="{% url 'expense_detail' expense.pk %}">{{ expense.title }}</a></td>
+          <td>{{ expense.category.name }}</td>
+          <td class="d-none d-md-table-cell">{{ expense.get_payment_method_display }}</td>
+          <td class="d-none d-md-table-cell">{{ expense.get_expense_type_display }}</td>
+          <td class="text-end">{{ expense.amount }}</td>
+          <td class="text-end">{{ expense.my_share|default_if_none:"-" }}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="7" class="text-center text-body-secondary py-4">No expenses found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% if page.paginator.num_pages > 1 %}
+  <nav aria-label="Pages" class="d-flex justify-content-between align-items-center">
+    {% if page.has_previous %}
+      <a class="btn btn-outline-secondary btn-sm" href="{% querystring page=page.previous_page_number %}">Previous</a>
+    {% else %}
+      <span></span>
+    {% endif %}
+    <span class="text-body-secondary small">Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
+    {% if page.has_next %}
+      <a class="btn btn-outline-secondary btn-sm" href="{% querystring page=page.next_page_number %}">Next</a>
+    {% else %}
+      <span></span>
+    {% endif %}
+  </nav>
+{% endif %}
+{% endblock %}

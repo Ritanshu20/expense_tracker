@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Delete expense | Smart Expense Tracker{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6 col-lg-5">
+    <h1 class="h3 mb-3">Delete expense</h1>
+    <p>Delete <strong>{{ expense.title }}</strong> ({{ expense.amount }})?</p>
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">Delete</button>
+      <a class="btn btn-link" href="{% url 'expense_detail' expense.pk %}">Cancel</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

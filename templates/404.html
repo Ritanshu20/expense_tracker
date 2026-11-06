@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Not found | Smart Expense Tracker{% endblock %}
+
+{% block content %}
+<div class="py-5 text-center">
+  <h1 class="h3">Page not found</h1>
+  <p class="text-body-secondary">This page does not exist, or you do not have access to it.</p>
+  <a href="{% url 'home' %}">Go back to the start</a>
+</div>
+{% endblock %}

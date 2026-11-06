@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ title }} | Smart Expense Tracker{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-10 col-lg-8">
+    <h1 class="h3 mb-3">{{ title }}</h1>
+    <form method="post" class="app-form">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      {% for field in form %}
+        {% if field.name != "split_type" %}
+          <div>{{ field.as_field_group }}</div>
+        {% endif %}
+      {% endfor %}
+
+      <div id="shared-section" class="border rounded p-3">
+        <h2 class="h5">Participants of a shared expense</h2>
+        <p class="text-body-secondary small">
+          Add each person by their exact username or email. For an equal split, leave Share empty.
+          For a custom split, type each person's amount. For a percentage split, type each person's percent.
+        </p>
+        <div class="mb-3">{{ form.split_type.as_field_group }}</div>
+        {{ participant_forms.management_form }}
+        {{ participant_forms.non_form_errors }}
+        <div id="participant-rows">
+          {% for row in participant_forms %}
+            {% include "expenses/participant_row.html" %}
+          {% endfor %}
+        </div>
+        <template id="empty-participant-row">
+          {% include "expenses/participant_row.html" with row=participant_forms.empty_form %}
+        </template>
+        <button type="button" id="add-participant" class="btn btn-sm btn-outline-secondary">Add person</button>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Save</button>
+      <a class="btn btn-link" href="{% url 'expense_list' %}">Cancel</a>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/expense-form.js' %}"></script>
+{% endblock %}
